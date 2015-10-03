@@ -1,0 +1,27 @@
+{
+  "name": "360PanoramaJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/kennethlynne/360PanoramaJS",
+  "authors": [
+    "Kenneth Lynne <kenneth.lynne@gmail.com>"
+  ],
+  "description": "Panorama viewer to view equirectangular images as 360 panoramas using ThreeJS",
+  "main": "index.html",
+  "keywords": [
+    "360panorama",
+    "panorama",
+    "threejs"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "threejs": "*"
+  }
+}
