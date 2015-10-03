@@ -35,7 +35,7 @@ var
     renderer = new THREE.WebGLRenderer(),
     canvasContainer = document.querySelector('#canvas'),
 
-    fov = 80,
+    fov = 100,
     aspect = width / height,
     nearPlane = 1,
     farPlane = 1000,
@@ -54,7 +54,7 @@ controls.noPan = true;
 controls.noZoom = true;
 controls.autoRotate = false;
 
-camera.position.x = 0.1;
+camera.position.z = 0.1;
 canvasContainer.appendChild(renderer.domElement);
 
 renderer.setSize(width, height);
@@ -81,11 +81,7 @@ window.addEventListener('deviceorientation', setOrientationControls, true);
 var loop = (function render() {
     controls.update();
     requestAnimationFrame(render);
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> add files and stereoeffect
     videoImageCanvasContext.drawImage(imageElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
 
     videoTexture.needsUpdate = true;
