@@ -1,19 +1,19 @@
 {
-  "name": "360PanoramaJS",
-  "version": "0.0.0",
-  "homepage": "https://github.com/kennethlynne/360PanoramaJS",
+  "name": "webvr-boilerplate",
+  "version": "0.1.0",
+  "homepage": "https://github.com/borismus/webvr-boilerplate",
   "authors": [
-    "Kenneth Lynne <kenneth.lynne@gmail.com>"
+    "Boris Smus <boris@smus.com>"
   ],
-  "description": "Panorama viewer to view equirectangular images as 360 panoramas using ThreeJS",
-  "main": "index.html",
+  "description": "A starting point for web-based VR experiences that work in both Cardboard and Oculus.",
+  "main": "build/webvr-manager.js",
   "keywords": [
-    "360panorama",
-    "panorama",
-    "threejs"
+    "vr",
+    "webvr",
+    "webgl",
+    "three.js"
   ],
-  "license": "MIT",
-  "private": true,
+  "license": "Apache2",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -22,6 +22,7 @@
     "tests"
   ],
   "dependencies": {
-    "threejs": "*"
+    "threejs": "*",
+    "dat.gui": "*"
   }
 }
