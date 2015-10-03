@@ -29,6 +29,9 @@ var
         sphereMaterial
     ),
 
+    stats_src = 'resources/stats.json',
+    stats = jQuery.getJSON(stats_src),
+
     renderer = new THREE.WebGLRenderer(),
     canvasContainer = document.querySelector('#canvas'),
 
@@ -47,7 +50,6 @@ videoImageCanvasContext.fillRect(0, 0, videoImageCanvas.width, videoImageCanvas.
 videoTexture.minFilter = THREE.LinearFilter;
 videoTexture.magFilter = THREE.LinearFilter;
 
-
 controls.noPan = true;
 controls.noZoom = true;
 controls.autoRotate = false;
@@ -60,6 +62,8 @@ renderer.setSize(width, height);
 
 sphere.scale.x = -1;
 scene.add(sphere);
+
+console.log(stats);
 
 // Our preferred controls via DeviceOrientation
 function setOrientationControls(e) {
@@ -77,7 +81,7 @@ window.addEventListener('deviceorientation', setOrientationControls, true);
 var loop = (function render() {
     controls.update();
     requestAnimationFrame(render);
-
+    
     videoImageCanvasContext.drawImage(imageElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
 
     videoTexture.needsUpdate = true;
