@@ -11,7 +11,9 @@ function errorCb(e) {
 
 }
 
-navigator.getUserMedia({video: true}, streamCb, errorCb);
+navigator.getUserMedia({
+    video: true
+}, streamCb, errorCb);
 
 var
     videoElement = document.querySelector('#camera'),
@@ -26,7 +28,11 @@ var
     segments = 32,
     rings = 32,
 
-    sphereMaterial = new THREE.MeshBasicMaterial({map: videoTexture, overdraw: true, side:THREE.DoubleSide}),
+    sphereMaterial = new THREE.MeshBasicMaterial({
+        map: videoTexture,
+        overdraw: true,
+        side: THREE.DoubleSide
+    }),
 
     sphere = new THREE.Mesh(
         new THREE.SphereGeometry(
@@ -41,7 +47,7 @@ var
     canvasContainer = document.querySelector('#canvas'),
 
     fov = 80,
-    aspect = width/height,
+    aspect = width / height,
     nearPlane = 1,
     farPlane = 1000,
     camera = new THREE.PerspectiveCamera(fov, aspect, nearPlane, farPlane),
@@ -52,8 +58,8 @@ var
 videoImageCanvasContext.fillStyle = "#000000";
 videoImageCanvasContext.fillRect(0, 0, videoImageCanvas.width, videoImageCanvas.height);
 
- videoTexture.minFilter = THREE.LinearFilter;
- videoTexture.magFilter = THREE.LinearFilter;
+videoTexture.minFilter = THREE.LinearFilter;
+videoTexture.magFilter = THREE.LinearFilter;
 
 
 controls.noPan = true;
@@ -62,10 +68,25 @@ controls.autoRotate = false;
 
 camera.position.x = 0.1;
 canvasContainer.appendChild(renderer.domElement);
+var effect = new THREE.StereoEffect(renderer);
+
 renderer.setSize(width, height);
 
 sphere.scale.x = -1;
 scene.add(sphere);
+
+// Our preferred controls via DeviceOrientation
+function setOrientationControls(e) {
+    if (!e.alpha) {
+        return;
+    }
+    controls = new THREE.DeviceOrientationControls(camera, true);
+    controls.connect();
+    controls.update();
+    element.addEventListener('click', fullscreen, false);
+    window.removeEventListener('deviceorientation', setOrientationControls, true);
+}
+window.addEventListener('deviceorientation', setOrientationControls, true);
 
 var loop = (function render() {
     controls.update();
@@ -73,9 +94,7 @@ var loop = (function render() {
 
     if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
         videoImageCanvasContext.drawImage(videoElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
-    }
-    else
-    {
+    } else {
         videoImageCanvasContext.drawImage(imageElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
     }
 
