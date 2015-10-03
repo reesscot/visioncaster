@@ -56,10 +56,10 @@ controls.autoRotate = false;
 
 camera.position.x = 0.1;
 canvasContainer.appendChild(renderer.domElement);
-var effect = new THREE.StereoEffect(renderer);
 
 renderer.setSize(width, height);
 
+var effect = new THREE.StereoEffect(renderer);
 sphere.scale.x = -1;
 scene.add(sphere);
 
@@ -81,11 +81,15 @@ window.addEventListener('deviceorientation', setOrientationControls, true);
 var loop = (function render() {
     controls.update();
     requestAnimationFrame(render);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> add files and stereoeffect
     videoImageCanvasContext.drawImage(imageElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
 
     videoTexture.needsUpdate = true;
 
-    renderer.render(scene, camera);
+    effect.render(scene, camera);
 
 })();
