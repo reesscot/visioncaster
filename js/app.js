@@ -1,7 +1,22 @@
 window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
 
+var videomonitor = document.querySelector('#camera');
+
+function streamCb(stream) {
+    videomonitor.src = window.URL.createObjectURL(stream);
+}
+
+function errorCb(e) {
+
+}
+
+navigator.getUserMedia({
+    video: true
+}, streamCb, errorCb);
+
 var
+    videoElement = document.querySelector('#camera'),
     imageElement = document.querySelector('#image'),
     videoImageCanvas = document.querySelector('#video-canvas-buffer'),
     videoImageCanvasContext = videoImageCanvas.getContext('2d'),
@@ -76,6 +91,12 @@ window.addEventListener('deviceorientation', setOrientationControls, true);
 var loop = (function render() {
     controls.update();
     requestAnimationFrame(render);
+
+    if (videoElement.readyState === videoElement.HAVE_ENOUGH_DATA) {
+        videoImageCanvasContext.drawImage(videoElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
+    } else {
+        videoImageCanvasContext.drawImage(imageElement, 0, 0, videoImageCanvas.width, videoImageCanvas.height);
+    }
 
     videoTexture.needsUpdate = true;
 
