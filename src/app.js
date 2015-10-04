@@ -17,7 +17,8 @@ var effect = new THREE.VREffect(renderer);
 effect.setSize(window.innerWidth, window.innerHeight);
 // Create a VR manager helper to enter and exit VR mode.
 var manager = new WebVRManager(renderer, effect, {hideButton: false});
-
+var mesh_bg, mesh_overlay;
+var currentSlide = 0;
 /*
     OK DO YOUR STUFF HERE ------------------------------- /
 */
@@ -52,100 +53,109 @@ Invert the scale of the geometry on the X axis. This flips the faces of the cyli
 
 geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
-/*
-Create the material that we will load our mockup into and apply to our cylinder object. We set `transparent` to true, enabling us to optionally use mockups with alpha channels. We set `side` to THREE.DoubleSide, so our material renders facing both inwards and outwards (relative to the  direction of the faces of the cylinder object). By default, materials and the faces of three.js meshes face outwards and are invisible from the reverse. Setting THREE.DoubleSide ensures the cylinder and it's material will be visible no matter which direction (inside or out) we are viewing it from. This step is not strictly necessary, since we are actually going to invert the faces of the object to face inwards in a later step, but it is good to be aware of the `side` material attribute and how to define it. We then load our mockup as a texture.
-*/
+/**Load initial Slide **/
+processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
 
-var material = new THREE.MeshBasicMaterial( {
-  transparent: true,
-  side: THREE.DoubleSide,
-  map: THREE.ImageUtils.loadTexture( 'img/africa-overlay.png' )
-});
+function processSlide(slide) {
+  scene.remove( mesh_bg );
+  scene.remove( mesh_overlay );
+  /*
+  Create the material that we will load our mockup into and apply to our cylinder object. We set `transparent` to true, enabling us to optionally use mockups with alpha channels. We set `side` to THREE.DoubleSide, so our material renders facing both inwards and outwards (relative to the  direction of the faces of the cylinder object). By default, materials and the faces of three.js meshes face outwards and are invisible from the reverse. Setting THREE.DoubleSide ensures the cylinder and it's material will be visible no matter which direction (inside or out) we are viewing it from. This step is not strictly necessary, since we are actually going to invert the faces of the object to face inwards in a later step, but it is good to be aware of the `side` material attribute and how to define it. We then load our mockup as a texture.
+  */
 
-/*
-Create the mesh of our cylinder object from the geometry and material.
-*/
+  var material = new THREE.MeshBasicMaterial( {
+    transparent: true,
+    side: THREE.DoubleSide,
+    map: THREE.ImageUtils.loadTexture( slide.overlay )
+  });
 
-var mesh_africa_overlay = new THREE.Mesh( geometry, material );
+  /*
+  Create the mesh of our cylinder object from the geometry and material.
+  */
+  mesh_overlay = new THREE.Mesh( geometry, material );
 
-/*
-Add our cylinder object to the scene. The default position of elements added to a three.js scene is 0,0,0, which is also the default position of our scene's camera. So our camera sits inside our cylinder.
-*/
+  /*
+  Add our cylinder object to the scene. The default position of elements added to a three.js scene is 0,0,0, which is also the default position of our scene's camera. So our camera sits inside our cylinder.
+  */
+  scene.add( mesh_overlay );
 
-scene.add( mesh_africa_overlay );
+  /*
+  To optionally add a background image to the scene, create a large sphere and apply a bitmap to it. First, create the geometry for the sphere. The SphereGeometry constructor takes several arguments, but we only need the basic three: radius, widthSegments, and heightSegments. We set radius to a big 5000 meters so the sphere is less likely to occlude other objects in our scene. We set width and height segments to 64 and 32 respectively to make it sphere surface smooth. And we then invert the geometry on the x-axis using THREE.Matrix4().makeScale(), to flip the geometry faces so they face "inwards", as we did with the mockup cylinder.
+  */
+  var geometryLocal = new THREE.SphereGeometry( 5000, 64, 32 );
+  geometryLocal.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
-/*
-To adjust the distance between our mockups and the user, we can optionally scale our mesh. If we apply 0.5 to the X,Y,Z, for example, the radius shrinks by half, and the mockups become twice as close to our eyes. Because we are scaling proportionally (equal on X,Y,Z) the mockups do not _appear_ any larger, but the stereo effect of the VR headset tells us they are closer. Play with this setting to find a value that you like.
-*/
+  /*
+  Create the material we will load our background image into.
+  */
+  material = new THREE.MeshBasicMaterial( {
+    map: THREE.ImageUtils.loadTexture( slide.image )
+  } );
 
-//mesh.scale.set( 0.5, 0.5, 0.5 );
+  /*
+  Create the mesh of our background from the geometry and material, and add it to the scene.
+  */
+  mesh_bg = new THREE.Mesh( geometryLocal, material );
+  scene.add( mesh_bg );
 
-/*
-To optionally add a background image to the scene, create a large sphere and apply a bitmap to it. First, create the geometry for the sphere. The SphereGeometry constructor takes several arguments, but we only need the basic three: radius, widthSegments, and heightSegments. We set radius to a big 5000 meters so the sphere is less likely to occlude other objects in our scene. We set width and height segments to 64 and 32 respectively to make it sphere surface smooth. And we then invert the geometry on the x-axis using THREE.Matrix4().makeScale(), to flip the geometry faces so they face "inwards", as we did with the mockup cylinder.
-*/
+  if(slide.sound) {
+      var sound_india = new THREE.Audio(listener);
+      sound_india.load( slide.sound );
+      sound_india.setRefDistance(20);
+      sound_india.autoplay = true;
+      sound_india.setLoop = 1;
+      mesh_overlay.add(sound_india);
+  }
+} //end processSlide event
 
-var geometry = new THREE.SphereGeometry( 5000, 64, 32 );
-geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
+function processVideoSlide(slide) {
+  scene.remove( mesh_bg );
+  scene.remove( mesh_overlay );
+  // video
 
-/*
-Create the material we will load our background image into.
-*/
+  video = document.createElement( 'video' );
+  video.loop = true;
+  video.src = 'resources/videos/essyan.mp4';
+  video.play();
 
-var material = new THREE.MeshBasicMaterial( {
-  map: THREE.ImageUtils.loadTexture( 'img/africa.jpg' )
-} );
+  texture = new THREE.VideoTexture( video );
+  texture.minFilter = THREE.LinearFilter;
+  texture.format = THREE.RGBFormat;
+  texture.generateMipmaps = false;
 
-/*
-Create the mesh of our background from the geometry and material, and add it to the scene.
-*/
+  var geometry = new THREE.SphereGeometry( 500, 60, 40 );
+  geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
+  // var uvs = geometry.faceVertexUvs[ 0 ];
 
-var mesh_africa_background = new THREE.Mesh( geometry, material );
-scene.add( mesh_africa_background );
+  // for ( var i = 0; i < uvs.length; i ++ ) {
+
+  //   for ( var j = 0; j < 3; j ++ ) {
+
+  //     uvs[ i ][ j ].x *= 0.5;
+
+  //   }
+
+  // }
+
+  var material = new THREE.MeshBasicMaterial( { map: texture } );
+
+  var mesh = new THREE.Mesh( geometry, material );
+  mesh.rotation.y = - Math.PI / 2;
+  scene.add( mesh );
+}
 
 jQuery('body').on('mouseup', function(e) {
-
-  console.log(e);
-  if(e.clientY < window.innerHeight*0.5){
-    scene.remove( mesh_africa_background );
-    scene.remove(mesh_africa_overlay);
-
-    if(mesh_india_background) {
-      scene.remove( mesh_india_background );
+  console.log(currentSlide);
+  currentSlide++;
+  if(currentSlide === 0 || e.clientY < window.innerHeight*0.5 || e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5){
+    if(currentSlide === 0){
     }
-    if(mesh_india_overlay) {
-      scene.remove( mesh_india_overlay);
+    if(currentSlide === 1) {
+      processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
     }
- 
-    var material = new THREE.MeshBasicMaterial( {
-      map: THREE.ImageUtils.loadTexture( 'img/india.jpg' )
-    } );
-
-    /*
-    Create the mesh of our background from the geometry and material, and add it to the scene.
-    */
-
-    var mesh_india_background = new THREE.Mesh( geometry, material );
-    scene.add( mesh_india_background );
-
-    material = new THREE.MeshBasicMaterial( {
-      transparent: true,
-      side: THREE.DoubleSide,
-      map: THREE.ImageUtils.loadTexture( 'img/india-overlay.png' )
-    });
-
-    /*
-    Create the mesh of our cylinder object from the geometry and material.
-    */
-
-    var mesh_india_overlay = new THREE.Mesh( geometry, material );
-    scene.add( mesh_india_overlay );
-
-    var sound_india = new THREE.Audio(listener);
-    sound_india.load( 'resources/sounds/india_market_edit.mp3' );
-    sound_india.setRefDistance(20);
-    sound_india.autoplay = true;
-    sound_india.setLoop = 1;
-    mesh_india_overlay.add(sound_india);
+    if(currentSlide ===2) {
+      processVideoSlide();
+    }
   }
 });
 /*  ----------------------------------------------------  */
