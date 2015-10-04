@@ -99,33 +99,46 @@ Create the mesh of our background from the geometry and material, and add it to 
 var mesh_africa_background = new THREE.Mesh( geometry, material );
 scene.add( mesh_africa_background );
 
-jQuery('body').on('mouseup', function(e) {
-  scene.remove( mesh_africa_background );
-  scene.remove(mesh_africa_overlay);
+jQuery('body').on('touchend', function(e) {
+
+  console.log(e);
+  if(e.clientY < window.innerHeight*0.5){
+    scene.remove( mesh_africa_background );
+    scene.remove(mesh_africa_overlay);
+
+    if(mesh_india_background) {
+      scene.remove( mesh_india_background );
+    }
+    if(mesh_india_overlay) {
+      scene.remove( mesh_india_overlay);
+    }
+ 
+    var material = new THREE.MeshBasicMaterial( {
+      map: THREE.ImageUtils.loadTexture( 'img/india.jpg' )
+    } );
+
+    /*
+    Create the mesh of our background from the geometry and material, and add it to the scene.
+    */
+
+    var mesh_india_background = new THREE.Mesh( geometry, material );
+    scene.add( mesh_india_background );
+
+    material = new THREE.MeshBasicMaterial( {
+      transparent: true,
+      side: THREE.DoubleSide,
+      map: THREE.ImageUtils.loadTexture( 'img/india-overlay.png' )
+    });
+
+    /*
+    Create the mesh of our cylinder object from the geometry and material.
+    */
+
+    mesh_india_overlay = new THREE.Mesh( geometry, material );
+    scene.add( mesh_india_overlay );
+  }
   
-  var material = new THREE.MeshBasicMaterial( {
-    map: THREE.ImageUtils.loadTexture( 'img/india.jpg' )
-  } );
-
-  /*
-  Create the mesh of our background from the geometry and material, and add it to the scene.
-  */
-
-  var mesh_india_background = new THREE.Mesh( geometry, material );
-  scene.add( mesh_india_background );
-
-  material = new THREE.MeshBasicMaterial( {
-    transparent: true,
-    side: THREE.DoubleSide,
-    map: THREE.ImageUtils.loadTexture( 'img/india-overlay.png' )
-  });
-
-  /*
-  Create the mesh of our cylinder object from the geometry and material.
-  */
-
-  mesh_india_overlay = new THREE.Mesh( geometry, material );
-  scene.add( mesh_india_overlay );
+  
 });
 /*  ----------------------------------------------------  */
 // Request animation frame loop function
