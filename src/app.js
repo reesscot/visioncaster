@@ -59,7 +59,7 @@ processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" }
 function processSlide(slide) {
   scene.remove( mesh_bg );
   scene.remove( mesh_overlay );
-  scene.remove(mesh_audio);
+  // if(mesh_audio) { mesh_audio.pause(); }
   /*
   Create the material that we will load our mockup into and apply to our cylinder object. We set `transparent` to true, enabling us to optionally use mockups with alpha channels. We set `side` to THREE.DoubleSide, so our material renders facing both inwards and outwards (relative to the  direction of the faces of the cylinder object). By default, materials and the faces of three.js meshes face outwards and are invisible from the reverse. Setting THREE.DoubleSide ensures the cylinder and it's material will be visible no matter which direction (inside or out) we are viewing it from. This step is not strictly necessary, since we are actually going to invert the faces of the object to face inwards in a later step, but it is good to be aware of the `side` material attribute and how to define it. We then load our mockup as a texture.
   */
@@ -112,7 +112,7 @@ function processSlide(slide) {
 function processVideoSlide(slide) {
   scene.remove( mesh_bg );
   scene.remove( mesh_overlay );
-  mesh_audio.pause();
+  if(mesh_audio) { mesh_audio.pause(); }
   // video
 
   video = document.createElement( 'video' );
@@ -159,10 +159,11 @@ jQuery('body').on('mouseup', function(e) {
   }
 });
 
-jQuery('body').on('touchend', function(e) {
+jQuery('body').on('touchstart', function(e) {
   console.log(currentSlide);
   currentSlide++;
-  if(ee.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
+  console.log(e);
+  if(e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
     if(currentSlide === 1) {
       processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
     }
