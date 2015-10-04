@@ -99,7 +99,7 @@ Create the mesh of our background from the geometry and material, and add it to 
 var mesh_africa_background = new THREE.Mesh( geometry, material );
 scene.add( mesh_africa_background );
 
-jQuery('body').on('touchend', function(e) {
+jQuery('body').on('mouseup', function(e) {
 
   console.log(e);
   if(e.clientY < window.innerHeight*0.5){
@@ -134,7 +134,7 @@ jQuery('body').on('touchend', function(e) {
     Create the mesh of our cylinder object from the geometry and material.
     */
 
-    mesh_india_overlay = new THREE.Mesh( geometry, material );
+    var mesh_india_overlay = new THREE.Mesh( geometry, material );
     scene.add( mesh_india_overlay );
   }
   
