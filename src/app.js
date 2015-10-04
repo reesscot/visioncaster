@@ -144,7 +144,7 @@ jQuery('body').on('mouseup', function(e) {
     sound_india.load( 'resources/sounds/india_market_edit.mp3' );
     sound_india.setRefDistance(20);
     sound_india.autoplay = true;
-    sound_india.setLoop = true;
+    sound_india.setLoop = 1;
     mesh_india_overlay.add(sound_india);
   }
 });
