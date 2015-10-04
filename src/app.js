@@ -7,6 +7,9 @@ document.body.appendChild(renderer.domElement);
 var scene = new THREE.Scene();
 // Create a three.js camera.
 var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.3, 10000);
+//Add Audio listener
+var listener = new THREE.AudioListener();
+camera.add( listener );
 // Apply VR headset positional data to camera.
 var controls = new THREE.VRControls(camera);
 // Apply VR stereo rendering to renderer.
@@ -136,9 +139,14 @@ jQuery('body').on('mouseup', function(e) {
 
     var mesh_india_overlay = new THREE.Mesh( geometry, material );
     scene.add( mesh_india_overlay );
+
+    var sound_india = new THREE.Audio(listener);
+    sound_india.load( 'resources/sounds/india_market_edit.mp3' );
+    sound_india.setRefDistance(20);
+    sound_india.autoplay = true;
+    sound_india.setLoop = true;
+    mesh_india_overlay.add(sound_india);
   }
-  
-  
 });
 /*  ----------------------------------------------------  */
 // Request animation frame loop function
