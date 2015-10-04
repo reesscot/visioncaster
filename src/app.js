@@ -17,7 +17,7 @@ var effect = new THREE.VREffect(renderer);
 effect.setSize(window.innerWidth, window.innerHeight);
 // Create a VR manager helper to enter and exit VR mode.
 var manager = new WebVRManager(renderer, effect, {hideButton: false});
-var mesh_bg, mesh_overlay;
+var mesh_bg, mesh_overlay, mesh_audio;
 var currentSlide = 0;
 /*
     OK DO YOUR STUFF HERE ------------------------------- /
@@ -59,6 +59,7 @@ processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" }
 function processSlide(slide) {
   scene.remove( mesh_bg );
   scene.remove( mesh_overlay );
+  scene.remove(mesh_audio);
   /*
   Create the material that we will load our mockup into and apply to our cylinder object. We set `transparent` to true, enabling us to optionally use mockups with alpha channels. We set `side` to THREE.DoubleSide, so our material renders facing both inwards and outwards (relative to the  direction of the faces of the cylinder object). By default, materials and the faces of three.js meshes face outwards and are invisible from the reverse. Setting THREE.DoubleSide ensures the cylinder and it's material will be visible no matter which direction (inside or out) we are viewing it from. This step is not strictly necessary, since we are actually going to invert the faces of the object to face inwards in a later step, but it is good to be aware of the `side` material attribute and how to define it. We then load our mockup as a texture.
   */
@@ -99,18 +100,19 @@ function processSlide(slide) {
   scene.add( mesh_bg );
 
   if(slide.sound) {
-      var sound_india = new THREE.Audio(listener);
-      sound_india.load( slide.sound );
-      sound_india.setRefDistance(20);
-      sound_india.autoplay = true;
-      sound_india.setLoop = 1;
-      mesh_overlay.add(sound_india);
+      mesh_audio = new THREE.Audio(listener);
+      mesh_audio.load( slide.sound );
+      mesh_audio.setRefDistance(20);
+      mesh_audio.autoplay = true;
+      mesh_audio.setLoop = 1;
+      mesh_overlay.add(mesh_audio);
   }
 } //end processSlide event
 
 function processVideoSlide(slide) {
   scene.remove( mesh_bg );
   scene.remove( mesh_overlay );
+  mesh_audio.pause();
   // video
 
   video = document.createElement( 'video' );
@@ -147,9 +149,20 @@ function processVideoSlide(slide) {
 jQuery('body').on('mouseup', function(e) {
   console.log(currentSlide);
   currentSlide++;
-  if(currentSlide === 0 || e.clientY < window.innerHeight*0.5 || e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5){
-    if(currentSlide === 0){
+  if(e.clientY < window.innerHeight*0.5) {
+    if(currentSlide === 1) {
+      processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
     }
+    if(currentSlide ===2) {
+      processVideoSlide();
+    }
+  }
+});
+
+jQuery('body').on('touchend', function(e) {
+  console.log(currentSlide);
+  currentSlide++;
+  if(ee.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
     if(currentSlide === 1) {
       processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
     }
