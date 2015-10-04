@@ -202,15 +202,11 @@ function onKey(event) {
   if (event.keyCode == 90) { // z
     controls.resetSensor();
   }
-};
+}
 
 window.addEventListener('keydown', onKey, true);
 // Handle window resizes
 function onWindowResize() {
-  console.log(currentSlide);
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  effect.setSize(window.innerWidth, window.innerHeight);
   if (window.innerWidth < window.innerHeight) {
     if(!isPortrait) {
       isLandscape = false;
@@ -228,6 +224,12 @@ function onWindowResize() {
   } else {
     isLandscape = true;
     isPortrait = false;
+  }
+  if(isLandscape){
+    console.log(currentSlide);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    effect.setSize(window.innerWidth, window.innerHeight);
   }
 }
 window.addEventListener('resize', onWindowResize, false);
