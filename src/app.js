@@ -17,7 +17,8 @@ var effect = new THREE.VREffect(renderer);
 effect.setSize(window.innerWidth, window.innerHeight);
 // Create a VR manager helper to enter and exit VR mode.
 var manager = new WebVRManager(renderer, effect, {hideButton: false});
-var mesh_bg, mesh_overlay, mesh_audio;
+var mesh_bg, mesh_overlay, mesh_audio = {};
+// mesh_audio.isPlaying = false;
 var currentSlide = 0;
 var isLandscape;
 var isPortrait;
@@ -56,12 +57,15 @@ Invert the scale of the geometry on the X axis. This flips the faces of the cyli
 geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
 /**Load initial Slide **/
-processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
+processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png", "sound": "resources/sounds/africa.mp3" });
 
 function processSlide(slide) {
   scene.remove( mesh_bg );
   scene.remove( mesh_overlay );
-  // if(mesh_audio) { mesh_audio.pause(); }
+  if(!!mesh_audio.isPlaying) {
+    mesh_audio.pause();
+  }
+
   /*
   Create the material that we will load our mockup into and apply to our cylinder object. We set `transparent` to true, enabling us to optionally use mockups with alpha channels. We set `side` to THREE.DoubleSide, so our material renders facing both inwards and outwards (relative to the  direction of the faces of the cylinder object). By default, materials and the faces of three.js meshes face outwards and are invisible from the reverse. Setting THREE.DoubleSide ensures the cylinder and it's material will be visible no matter which direction (inside or out) we are viewing it from. This step is not strictly necessary, since we are actually going to invert the faces of the object to face inwards in a later step, but it is good to be aware of the `side` material attribute and how to define it. We then load our mockup as a texture.
   */
@@ -109,8 +113,9 @@ function processSlide(slide) {
       mesh_audio.setRefDistance(20);
       mesh_audio.autoplay = true;
       mesh_audio.setLoop = 1;
-      mesh_overlay.add(mesh_audio);
+      // mesh_overlay.add(mesh_audio);
   }
+  scene.add(mesh_audio);
   currentSlide++;
 } //end processSlide event
 
@@ -221,7 +226,7 @@ function onWindowResize() {
         // processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png" });
       } else if (currentSlide === 2) {
         currentSlide = 0;
-        processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
+        processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png", "sound" : "resources/sounds/africa.mp3" });
       }
 
     }
