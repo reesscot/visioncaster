@@ -63,13 +63,13 @@ var material = new THREE.MeshBasicMaterial( {
 Create the mesh of our cylinder object from the geometry and material.
 */
 
-var mesh = new THREE.Mesh( geometry, material );
+var mesh_africa_overlay = new THREE.Mesh( geometry, material );
 
 /*
 Add our cylinder object to the scene. The default position of elements added to a three.js scene is 0,0,0, which is also the default position of our scene's camera. So our camera sits inside our cylinder.
 */
 
-scene.add( mesh );
+scene.add( mesh_africa_overlay );
 
 /*
 To adjust the distance between our mockups and the user, we can optionally scale our mesh. If we apply 0.5 to the X,Y,Z, for example, the radius shrinks by half, and the mockups become twice as close to our eyes. Because we are scaling proportionally (equal on X,Y,Z) the mockups do not _appear_ any larger, but the stereo effect of the VR headset tells us they are closer. Play with this setting to find a value that you like.
@@ -96,20 +96,36 @@ var material = new THREE.MeshBasicMaterial( {
 Create the mesh of our background from the geometry and material, and add it to the scene.
 */
 
-var mesh = new THREE.Mesh( geometry, material );
-scene.add( mesh );
+var mesh_africa_background = new THREE.Mesh( geometry, material );
+scene.add( mesh_africa_background );
 
-jQuery('body').on('touchend', function(e) {
+jQuery('body').on('mouseup', function(e) {
+  scene.remove( mesh_africa_background );
+  scene.remove(mesh_africa_overlay);
+  
   var material = new THREE.MeshBasicMaterial( {
-  map: THREE.ImageUtils.loadTexture( 'img/india.jpg' )
-} );
+    map: THREE.ImageUtils.loadTexture( 'img/india.jpg' )
+  } );
 
-/*
-Create the mesh of our background from the geometry and material, and add it to the scene.
-*/
+  /*
+  Create the mesh of our background from the geometry and material, and add it to the scene.
+  */
 
-var mesh = new THREE.Mesh( geometry, material );
-scene.add( mesh );
+  var mesh_india_background = new THREE.Mesh( geometry, material );
+  scene.add( mesh_india_background );
+
+  material = new THREE.MeshBasicMaterial( {
+    transparent: true,
+    side: THREE.DoubleSide,
+    map: THREE.ImageUtils.loadTexture( 'img/india-overlay.png' )
+  });
+
+  /*
+  Create the mesh of our cylinder object from the geometry and material.
+  */
+
+  mesh_india_overlay = new THREE.Mesh( geometry, material );
+  scene.add( mesh_india_overlay );
 });
 /*  ----------------------------------------------------  */
 // Request animation frame loop function
