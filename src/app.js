@@ -121,6 +121,8 @@ function processVideoSlide(slide) {
   // video
 
   video = document.createElement( 'video' );
+  // videoDiv = document.createElement('div');
+  // document.body.appendChild()
   video.loop = true;
   video.src = 'resources/videos/essyan.mp4';
   video.play();
@@ -218,7 +220,8 @@ function onWindowResize() {
         processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
         // processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png" });
       } else if (currentSlide === 2) {
-        processVideoSlide();
+        currentSlide = 0;
+        processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
       }
 
     }
