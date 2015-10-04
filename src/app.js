@@ -19,6 +19,8 @@ effect.setSize(window.innerWidth, window.innerHeight);
 var manager = new WebVRManager(renderer, effect, {hideButton: false});
 var mesh_bg, mesh_overlay, mesh_audio;
 var currentSlide = 0;
+var isLandscape;
+var isPortrait;
 /*
     OK DO YOUR STUFF HERE ------------------------------- /
 */
@@ -93,6 +95,8 @@ function processSlide(slide) {
     map: THREE.ImageUtils.loadTexture( slide.image )
   } );
 
+  console.log(material);
+
   /*
   Create the mesh of our background from the geometry and material, and add it to the scene.
   */
@@ -107,6 +111,7 @@ function processSlide(slide) {
       mesh_audio.setLoop = 1;
       mesh_overlay.add(mesh_audio);
   }
+  currentSlide++;
 } //end processSlide event
 
 function processVideoSlide(slide) {
@@ -144,34 +149,35 @@ function processVideoSlide(slide) {
   var mesh = new THREE.Mesh( geometry, material );
   mesh.rotation.y = - Math.PI / 2;
   scene.add( mesh );
+  currentSlide++;
 }
 
-jQuery('body').on('mouseup', function(e) {
-  console.log(currentSlide);
-  currentSlide++;
-  if(e.clientY < window.innerHeight*0.5) {
-    if(currentSlide === 1) {
-      processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
-    }
-    if(currentSlide ===2) {
-      processVideoSlide();
-    }
-  }
-});
+// jQuery('body').on('mouseup', function(e) {
+//   console.log(currentSlide);
+//   currentSlide++;
+//   if(e.clientY < window.innerHeight*0.5) {
+//     if(currentSlide === 1) {
+//       processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
+//     }
+//     if(currentSlide ===2) {
+//       processVideoSlide();
+//     }
+//   }
+// });
 
-jQuery('body').on('touchstart', function(e) {
-  console.log(currentSlide);
-  currentSlide++;
-  console.log(e);
-  if(e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
-    if(currentSlide === 1) {
-      processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
-    }
-    if(currentSlide ===2) {
-      processVideoSlide();
-    }
-  }
-});
+// jQuery('body').on('touchstart', function(e) {
+//   console.log(currentSlide);
+//   currentSlide++;
+//   console.log(e);
+//   if(e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
+//     if(currentSlide === 1) {
+//       processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
+//     }
+//     if(currentSlide ===2) {
+//       processVideoSlide();
+//     }
+//   }
+// });
 /*  ----------------------------------------------------  */
 // Request animation frame loop function
 function animate(timestamp) {
@@ -199,8 +205,26 @@ function onKey(event) {
 window.addEventListener('keydown', onKey, true);
 // Handle window resizes
 function onWindowResize() {
+  console.log(currentSlide);
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   effect.setSize(window.innerWidth, window.innerHeight);
+  if (window.innerWidth < window.innerHeight) {
+    if(!isPortrait) {
+      isLandscape = false;
+      isPortrait = true;
+      console.log('hello');
+      if(currentSlide === 1) {
+        processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
+        // processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png" });
+      } else if (currentSlide === 2) {
+        processVideoSlide();
+      }
+
+    }
+  } else {
+    isLandscape = true;
+    isPortrait = false;
+  }
 }
 window.addEventListener('resize', onWindowResize, false);
