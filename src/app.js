@@ -99,7 +99,18 @@ Create the mesh of our background from the geometry and material, and add it to 
 var mesh = new THREE.Mesh( geometry, material );
 scene.add( mesh );
 
+jQuery('body').on('touchend', function(e) {
+  var material = new THREE.MeshBasicMaterial( {
+  map: THREE.ImageUtils.loadTexture( 'img/india.jpg' )
+} );
 
+/*
+Create the mesh of our background from the geometry and material, and add it to the scene.
+*/
+
+var mesh = new THREE.Mesh( geometry, material );
+scene.add( mesh );
+});
 /*  ----------------------------------------------------  */
 // Request animation frame loop function
 function animate(timestamp) {
