@@ -56,7 +56,7 @@ Invert the scale of the geometry on the X axis. This flips the faces of the cyli
 geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 
 /**Load initial Slide **/
-processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
+processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png", "sound" : "resources/sounds/africa.mp3" });
 
 function processSlide(slide) {
   scene.remove( mesh_bg );
@@ -216,8 +216,7 @@ function onWindowResize() {
         processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
         // processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png" });
       } else if (currentSlide === 2) {
-        currentSlide = 0;
-        processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
+        processVideoSlide();
       }
 
     }
