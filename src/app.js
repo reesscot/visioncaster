@@ -23,7 +23,9 @@ var mesh_bg, mesh_overlay, mesh_audio;
 var projector,container,stats;
 var particleMaterial;
 var objects = [];
-
+var menu_item_1;
+var menu_item_2;
+var menu_item_3;
 var currentSlide = 0;
 /*
     OK DO YOUR STUFF HERE ------------------------------- /
@@ -63,8 +65,14 @@ geometry.applyMatrix( new THREE.Matrix4().makeScale( -1, 1, 1 ) );
 //processSlide({ "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" });
 
 function processSlide(slide) {
+  document.getElementById('menu_canvas');
   scene.remove( mesh_bg );
   scene.remove( mesh_overlay );
+  if(slide.video) {
+    processVideoSlide(slide);
+    return;
+  }
+
   // if(mesh_audio) { mesh_audio.pause(); }
   /*
   Create the material that we will load our mockup into and apply to our cylinder object. We set `transparent` to true, enabling us to optionally use mockups with alpha channels. We set `side` to THREE.DoubleSide, so our material renders facing both inwards and outwards (relative to the  direction of the faces of the cylinder object). By default, materials and the faces of three.js meshes face outwards and are invisible from the reverse. Setting THREE.DoubleSide ensures the cylinder and it's material will be visible no matter which direction (inside or out) we are viewing it from. This step is not strictly necessary, since we are actually going to invert the faces of the object to face inwards in a later step, but it is good to be aware of the `side` material attribute and how to define it. We then load our mockup as a texture.
@@ -152,84 +160,87 @@ function processVideoSlide(slide) {
   scene.add( mesh );
 }
 
-jQuery('body').on('mouseup', function(e) {
-  currentSlide++;
-  if(e.clientY < window.innerHeight*0.5) {
-    if(currentSlide === 1) {
-      processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
-    }
-    if(currentSlide ===2) {
-      processVideoSlide();
-    }
-  }
-});
+// jQuery('body').on('mouseup', function(e) {
+//   currentSlide++;
+//   if(e.clientY < window.innerHeight*0.5) {
+//     if(currentSlide === 1) {
+//       processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
+//     }
+//     if(currentSlide ===2) {
+//       processVideoSlide();
+//     }
+//   }
+// });
 
-jQuery('body').on('touchstart', function(e) {
-  console.log(currentSlide);
-  currentSlide++;
-  console.log(e);
-  if(e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
-    if(currentSlide === 1) {
-      processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
-    }
-    if(currentSlide ===2) {
-      processVideoSlide();
-    }
-  }
-});
+// jQuery('body').on('touchstart', function(e) {
+//   console.log(currentSlide);
+//   currentSlide++;
+//   console.log(e);
+//   if(e.originalEvent.changedTouches[0].clientY < window.innerHeight*0.5) {
+//     if(currentSlide === 1) {
+//       processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
+//     }
+//     if(currentSlide ===2) {
+//       processVideoSlide();
+//     }
+//   }
+// });
 
 function init_menu() {
     container = document.createElement('div');
+    container.id = "menu_canvas";
     document.body.appendChild(container);
     var info = document.createElement('div');
     info.style.position = 'absolute';
     info.style.top = '10px';
     info.style.width = '100%';
     info.style.textAlign = 'center';
-    info.innerHTML =
-        '';
+    info.innerHTML = '';
     container.appendChild(info);
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight,
         1, 10000);
     camera.position.set(220, 0, 500);
     scene = new THREE.Scene();
     var geometry = new THREE.CubeGeometry(100, 100, 100);
-    for (var i = 0; i < 5; i++) {
-        var object = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-            color: Math.random() * 0xffffff,
-            opacity: 0.5
-        }));
-        object.position.y = i;
-        object.position.x = i * 10 + i * 100;
-        object.position.z = i;
-        console.log(object);
+
+    for (var i = 0; i < 3; i++) {
+
         switch (i) {
             case 0:
-                object.userData = {
-                    URL: "http://google.com"
-                };
+                material = new THREE.MeshBasicMaterial( {
+                  side: THREE.DoubleSide,
+                  map: THREE.ImageUtils.loadTexture( "img/africa_icon.png" )
+                } );
                 break;
             case 1:
-                object.userData = {
-                    URL: "http://yahoo.com"
-                };
+                material = new THREE.MeshBasicMaterial( {
+                  side: THREE.DoubleSide,
+                  map: THREE.ImageUtils.loadTexture( "img/india_icon.png" )
+                } );
                 break;
             case 2:
-                object.userData = {
-                    URL: "http://msn.com"
-                };
-                break;
-            case 3:
-                object.userData = {
-                    URL: "http://engadget.com"
-                };
-                break;
-            case 4:
-                object.userData = {
-                    URL: "http://stackoverflow.com"
-                };
+                material = new THREE.MeshBasicMaterial( {
+                  side: THREE.DoubleSide,
+                  map: THREE.ImageUtils.loadTexture( "img/syria_icon.png" )
+                } );
                 break;
         }
+        var object = new THREE.Mesh(geometry, material);
+        object.position.y = i;
+        object.position.x = i * 100 + i * 100;
+        object.position.z = i;
+        switch (i) {
+            case 0:
+                object.userData = { "image": "img/africa.jpg", "overlay" : "img/africa-overlay.png" };
+                break;
+            case 1:
+                object.userData = { "image": "img/india.jpg", "overlay" : "img/india-overlay.png" };
+                break;
+            case 2:
+                object.userData = { "video": "video"};
+                break;
+        }
+        console.log(object);
         scene.add(object);
         objects.push(object);
     }
@@ -261,7 +272,7 @@ function onDocumentMouseDown(event) {
         .normalize());
     var intersects = raycaster.intersectObjects(objects);
     if (intersects.length > 0) {
-        window.open(intersects[0].object.userData.URL);
+        processSlide(intersects[0].object.userData);
     }
 }
 /*  ----------------------------------------------------  */
