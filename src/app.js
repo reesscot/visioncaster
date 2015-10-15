@@ -213,7 +213,7 @@ function onWindowResize() {
       isPortrait = true;
       console.log('hello');
       if(currentSlide === 1) {
-        processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/india_market_edit.mp3" });
+        processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png", "sound": "resources/sounds/037600983-african-savannah-day-4.mp3" });
         // processSlide({ "image": "img/india.jpg", "overlay" : "img/india-overlay.png" });
       } else if (currentSlide === 2) {
         currentSlide = 0;
