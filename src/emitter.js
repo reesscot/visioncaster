@@ -20,10 +20,10 @@ function Emitter() {
 Emitter.prototype.emit = function(eventName) {
   var callbacks = this.callbacks[eventName];
   if (!callbacks) {
-    console.log('No valid callback specified.');
+    //console.log('No valid callback specified.');
     return;
   }
-  var args = [].slice.call(arguments)
+  var args = [].slice.call(arguments);
   // Eliminate the first param (the callback).
   args.shift();
   for (var i = 0; i < callbacks.length; i++) {
