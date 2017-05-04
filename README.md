@@ -1,6 +1,6 @@
-# Visioncaster Hackathon
+# Visioncaster
 
-A simple WebVR experiment optimized for Google Cardboard for a 2016 Coding for the Kingdom hackathon.
+A simple WebVR experiment for the 2015 Coding for the Kingdom hackathon.
 
 Technology used:
 [WevVR Boilerplate](http://borismus.github.io/webvr-boilerplate/)
